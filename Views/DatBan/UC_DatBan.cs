@@ -1,5 +1,4 @@
 ﻿using LTTQ_BTL.BLL;
-using LTTQ_BTL.Dao;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +14,8 @@ namespace LTTQ_BTL.Views.DatBan
         PhieuDatBanBLL bll = new PhieuDatBanBLL();
         MonAnBLL bll2 = new MonAnBLL();
         LoaiCongDungBLL bll3 = new LoaiCongDungBLL();
+        NhanVienBLL bll4 = new NhanVienBLL();
+        KhachHangBLL bll5 = new KhachHangBLL();
 
         bool Nhap = false;
 
@@ -197,12 +198,12 @@ namespace LTTQ_BTL.Views.DatBan
                 TrangThaiXem();
                 DinhDangDGV3();
 
-                DataTable dtKhach = bll.DSKhach();
+                DataTable dtKhach = bll5.DSKhachHang();
                 comboBox1.DataSource = dtKhach;
                 comboBox1.DisplayMember = "TenKhach";
                 comboBox1.ValueMember = "MaKhach";
 
-                DataTable dtNhanVien = bll.DSNhanVien();
+                DataTable dtNhanVien = bll4.DSNhanVien();
                 comboBox2.DataSource = dtNhanVien;
                 comboBox2.DisplayMember = "TenNhanVien";
                 comboBox2.ValueMember = "MaNhanVien";
@@ -466,6 +467,13 @@ namespace LTTQ_BTL.Views.DatBan
 
         private void button2_Click(object sender, EventArgs e)
         {
+            string ma = dataGridView1.SelectedRows[0].Cells[0].Value?.ToString();
+            if (Convert.ToDateTime(bll.LayPhieuDatBan(ma).Rows[0][4]) < DateTime.Now.Date)
+            {
+                MessageBox.Show("Không thể sửa phiếu đã qua ngày dùng.");
+                return;
+            }
+
             if (Nhap == false)
             {
                 Nhap = true;
@@ -581,13 +589,25 @@ namespace LTTQ_BTL.Views.DatBan
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string maPhieu = dataGridView1.CurrentRow.Cells["MaPhieu"].Value?.ToString();
+            string ma = dataGridView1.SelectedRows[0].Cells[0].Value?.ToString();
+            if (Convert.ToDateTime(bll.LayPhieuDatBan(ma).Rows[0][4]) < DateTime.Now.Date)
+            {
+                MessageBox.Show("Không thể sửa phiếu đã qua ngày dùng.");
+                return;
+            }
 
-            if (string.IsNullOrWhiteSpace(maPhieu))
+            if (dataGridView1.Rows.Count == 0)
             {
                 MessageBox.Show("Không lấy được mã phiếu đặt bàn.");
                 return;
             }
+            if (string.IsNullOrWhiteSpace(dataGridView1.CurrentRow.Cells["MaPhieu"].Value?.ToString()))
+            {
+                MessageBox.Show("Không lấy được mã phiếu đặt bàn.");
+                return;
+            }
+
+            string maPhieu = dataGridView1.CurrentRow.Cells["MaPhieu"].Value?.ToString();
 
             DialogResult xacNhan = MessageBox.Show(
                 "Bạn có chắc chắn muốn xóa phiếu đặt bàn này?\nNguyên liệu đã sử dụng sẽ được hoàn lại kho.",
@@ -616,6 +636,11 @@ namespace LTTQ_BTL.Views.DatBan
                     MessageBoxIcon.Warning
                 );
             }
+        }
+
+        private void panel4_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

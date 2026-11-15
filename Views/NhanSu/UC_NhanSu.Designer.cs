@@ -48,6 +48,7 @@
             label2 = new Label();
             label3 = new Label();
             txtTenNV = new TextBox();
+            button1 = new Button();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvNhanVien).BeginInit();
             groupBox1.SuspendLayout();
@@ -55,19 +56,22 @@
             // 
             // groupBox2
             // 
+            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox2.BackColor = Color.FromArgb(254, 254, 254);
             groupBox2.Controls.Add(dgvNhanVien);
             groupBox2.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            groupBox2.Location = new Point(505, 49);
+            groupBox2.Location = new Point(514, 49);
             groupBox2.Margin = new Padding(3, 4, 3, 4);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new Padding(3, 4, 3, 4);
-            groupBox2.Size = new Size(1025, 602);
+            groupBox2.Size = new Size(365, 617);
             groupBox2.TabIndex = 11;
             groupBox2.TabStop = false;
             groupBox2.Text = "Danh sách nhân viên";
             // 
             // dgvNhanVien
             // 
+            dgvNhanVien.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvNhanVien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvNhanVien.Location = new Point(18, 32);
@@ -75,11 +79,13 @@
             dgvNhanVien.Name = "dgvNhanVien";
             dgvNhanVien.RowHeadersWidth = 51;
             dgvNhanVien.RowTemplate.Height = 24;
-            dgvNhanVien.Size = new Size(1001, 545);
+            dgvNhanVien.Size = new Size(326, 560);
             dgvNhanVien.TabIndex = 0;
             // 
             // groupBox1
             // 
+            groupBox1.BackColor = Color.FromArgb(254, 254, 254);
+            groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(btnLamMoi);
             groupBox1.Controls.Add(btnXoa);
             groupBox1.Controls.Add(btnThem);
@@ -98,11 +104,11 @@
             groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(txtTenNV);
             groupBox1.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            groupBox1.Location = new Point(27, 49);
+            groupBox1.Location = new Point(14, 49);
             groupBox1.Margin = new Padding(3, 4, 3, 4);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new Padding(3, 4, 3, 4);
-            groupBox1.Size = new Size(472, 602);
+            groupBox1.Size = new Size(494, 602);
             groupBox1.TabIndex = 10;
             groupBox1.TabStop = false;
             groupBox1.Text = "Thông tin chi tiết";
@@ -110,7 +116,7 @@
             // btnLamMoi
             // 
             btnLamMoi.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            btnLamMoi.Location = new Point(334, 524);
+            btnLamMoi.Location = new Point(373, 524);
             btnLamMoi.Margin = new Padding(3, 4, 3, 4);
             btnLamMoi.Name = "btnLamMoi";
             btnLamMoi.Size = new Size(116, 40);
@@ -122,7 +128,7 @@
             // btnXoa
             // 
             btnXoa.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            btnXoa.Location = new Point(181, 524);
+            btnXoa.Location = new Point(251, 524);
             btnXoa.Margin = new Padding(3, 4, 3, 4);
             btnXoa.Name = "btnXoa";
             btnXoa.Size = new Size(116, 40);
@@ -134,7 +140,7 @@
             // btnThem
             // 
             btnThem.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            btnThem.Location = new Point(22, 524);
+            btnThem.Location = new Point(6, 524);
             btnThem.Margin = new Padding(3, 4, 3, 4);
             btnThem.Name = "btnThem";
             btnThem.Size = new Size(116, 40);
@@ -280,6 +286,18 @@
             txtTenNV.Size = new Size(200, 27);
             txtTenNV.TabIndex = 4;
             // 
+            // button1
+            // 
+            button1.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            button1.Location = new Point(128, 524);
+            button1.Margin = new Padding(3, 4, 3, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(116, 40);
+            button1.TabIndex = 18;
+            button1.Text = "&Sửa";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // UC_NhanSu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -288,7 +306,8 @@
             Controls.Add(groupBox1);
             Margin = new Padding(3, 4, 3, 4);
             Name = "UC_NhanSu";
-            Size = new Size(1531, 685);
+            Size = new Size(900, 700);
+            Load += UC_NhanSu_Load;
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvNhanVien).EndInit();
             groupBox1.ResumeLayout(false);
@@ -319,5 +338,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtTenNV;
+        private Button button1;
     }
 }

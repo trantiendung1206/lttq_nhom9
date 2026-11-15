@@ -5,7 +5,6 @@ using LTTQ_BTL.Views.NguyenLieu;
 using LTTQ_BTL.Views.NhanSu;
 using LTTQ_BTL.Views.Khach;
 using LTTQ_BTL.Reports.BaoCao;
-using QuanLyNhaHang;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -95,21 +94,21 @@ namespace LTTQ_BTL.Views
 
         private void button4_Click(object sender, EventArgs e)
         {
-            ucNhanSu uc = new ucNhanSu();
+            UC_NhanSu uc= new UC_NhanSu();
             HienThiTrang(uc);
             activeButton(sender);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            ucKhach uc = new ucKhach();
+            UC_Khach uc = new UC_Khach();
             HienThiTrang(uc);
             activeButton(sender);
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            ucBaoCao uc = new ucBaoCao();
+            UC_BaoCao uc = new UC_BaoCao();
             HienThiTrang(uc);
             activeButton(sender);
         }

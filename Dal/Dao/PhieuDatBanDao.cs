@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace LTTQ_BTL.Dao
+namespace LTTQ_BTL.Dal.Dao
 {
     public class PhieuDatBanDao
     {
@@ -17,11 +17,10 @@ namespace LTTQ_BTL.Dao
 
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = @"SELECT * 
-                FROM PhieuDatBan JOIN Khach ON PhieuDatBan.MaKhach = Khach.MaKhach 
-                JOIN NhanVien ON PhieuDatBan.MaNhanVien = NhanVien.MaNhanVien";
+                SqlCommand cmd = new SqlCommand("sp_DSPhieuDatBan", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(dt);
             }
 
@@ -34,13 +33,12 @@ namespace LTTQ_BTL.Dao
 
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = @"SELECT * 
-                FROM PhieuDatBan JOIN Khach ON PhieuDatBan.MaKhach = Khach.MaKhach 
-                JOIN NhanVien ON PhieuDatBan.MaNhanVien = NhanVien.MaNhanVien
-                WHERE MaPhieu = @MaPhieu";
+                SqlCommand cmd = new SqlCommand("sp_LayPhieuDatBan", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-                adapter.SelectCommand.Parameters.AddWithValue("@MaPhieu", ma);
+                cmd.Parameters.AddWithValue("@MaPhieu", ma);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(dt);
             }
 
@@ -54,12 +52,12 @@ namespace LTTQ_BTL.Dao
 
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = @"SELECT * 
-                FROM ChiTietPhieuDatBan JOIN MonAn ON ChiTietPhieuDatBan.MaMonAn = MonAn.MaMonAn 
-                WHERE MaPhieu = @MaPhieu";
+                SqlCommand cmd = new SqlCommand("sp_DSChiTietPhieuDatBan", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-                adapter.SelectCommand.Parameters.AddWithValue("@MaPhieu", ma);
+                cmd.Parameters.AddWithValue("@MaPhieu", ma);
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(dt);
             }
 
@@ -184,33 +182,6 @@ namespace LTTQ_BTL.Dao
             }
         }
 
-        public DataTable DSNhanVien()
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = db.GetConnection())
-            {
-                string sql = "SELECT * FROM NhanVien;";
-
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-
-                adapter.Fill(dt);
-            }
-            return dt;
-        }
-
-        public DataTable DSKhach()
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = db.GetConnection())
-            {
-                string sql = "SELECT * FROM Khach;";
-
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-
-                adapter.Fill(dt);
-            }
-            return dt;
-        }
         //update phieu
         public bool SuaPhieuDatBan(
                         string maPhieu,
@@ -290,94 +261,14 @@ namespace LTTQ_BTL.Dao
         {
             using (SqlConnection conn = db.GetConnection())
             {
+                SqlCommand cmd = new SqlCommand("sp_XoaPhieuDatBan", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@MaPhieu", maPhieu);
+
                 conn.Open();
 
-                using (SqlTransaction tran = conn.BeginTransaction())
-                {
-                    try
-                    {
-                        // 1. Kiểm tra phiếu đặt bàn có tồn tại không
-                        string sqlKiemTra = @"
-                    SELECT COUNT(1)
-                    FROM PhieuDatBan
-                    WHERE MaPhieu = @MaPhieu";
-
-                        using (SqlCommand cmd = new SqlCommand(sqlKiemTra, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@MaPhieu", maPhieu);
-
-                            int tonTai = Convert.ToInt32(cmd.ExecuteScalar());
-
-                            if (tonTai == 0)
-                            {
-                                tran.Commit();
-                                return false;
-                            }
-                        }
-
-                        // 2. Hoàn lại nguyên liệu đã trừ
-                        string sqlHoanNguyenLieu = @"
-                    UPDATE NL
-                    SET NL.SoLuong = ISNULL(NL.SoLuong, 0) + CT.SoLuongHoan
-                    FROM NguyenLieu NL
-                    INNER JOIN
-                    (
-                        SELECT
-                            NLM.MaNguyenLieu,
-                            SUM(NLM.SoLuong * CT.SoLuong) AS SoLuongHoan
-                        FROM ChiTietPhieuDatBan CT
-                        INNER JOIN NguyenLieu_MonAn NLM
-                            ON CT.MaMonAn = NLM.MaMonAn
-                        WHERE CT.MaPhieu = @MaPhieu
-                        GROUP BY NLM.MaNguyenLieu
-                    ) CT
-                        ON NL.MaNguyenLieu = CT.MaNguyenLieu";
-
-                        using (SqlCommand cmd = new SqlCommand(sqlHoanNguyenLieu, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@MaPhieu", maPhieu);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // 3. Xóa chi tiết phiếu đặt bàn
-                        string sqlXoaChiTiet = @"
-                    DELETE FROM ChiTietPhieuDatBan
-                    WHERE MaPhieu = @MaPhieu";
-
-                        using (SqlCommand cmd = new SqlCommand(sqlXoaChiTiet, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@MaPhieu", maPhieu);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // 4. Xóa phiếu đặt bàn
-                        string sqlXoaPhieu = @"
-                    DELETE FROM PhieuDatBan
-                    WHERE MaPhieu = @MaPhieu";
-
-                        using (SqlCommand cmd = new SqlCommand(sqlXoaPhieu, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@MaPhieu", maPhieu);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // 5. Hoàn tất
-                        tran.Commit();
-                        return true;
-                    }
-                    catch (SqlException ex) when (ex.Number == 547)
-                    {
-                        tran.Rollback();
-
-                        throw new Exception(
-                            "Không thể xóa phiếu đặt bàn vì phiếu đang được liên kết với dữ liệu khác.", ex);
-                    }
-                    catch
-                    {
-                        tran.Rollback();
-                        throw;
-                    }
-                }
+                return Convert.ToBoolean(cmd.ExecuteScalar());
             }
         }
     }

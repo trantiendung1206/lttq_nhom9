@@ -1,5 +1,5 @@
 ﻿using LTTQ_BTL.BLL;
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

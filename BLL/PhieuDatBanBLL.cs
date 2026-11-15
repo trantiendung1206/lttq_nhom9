@@ -1,4 +1,4 @@
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,11 +16,49 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.DSPhieuDatBan();
-                if (dt.Rows.Count == 0)
-                    return new DataTable();
 
                 return dt.DefaultView.ToTable(
                     false, "MaPhieu", "TenKhach", "TenNhanVien", "NgayDat", "NgayDung", "TongTien");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách phiếu đặt bàn: " + ex.Message);
+            }
+        }
+        //dung trong bao cao
+        public DataTable DSPhieuDatBan_BaoCao()
+        {
+            try
+            {
+                DataTable dt = dao.DSPhieuDatBan();
+
+                return dt.DefaultView.ToTable(false, "MaPhieu", "NgayDung", "MaNhanVien", "TenNhanVien",  "TenKhach", "TongTien");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách phiếu đặt bàn: " + ex.Message);
+            }
+        }
+        //dung trong bao cao
+        public DataTable LocDSPhieuDatBan_BaoCao(DateTime tuNgay, DateTime denNgay, string maNhanVien)
+        {
+            try
+            {
+                DataTable dt = dao.DSPhieuDatBan();
+                dt = dt.DefaultView.ToTable(false, "MaPhieu", "NgayDung", "MaNhanVien", "TenNhanVien", "TenKhach", "TongTien");
+                DataTable ketQua = dt.Clone();
+                ketQua.Clear();
+                foreach (DataRow row in dt.Rows)
+                {
+                    DateTime ngay = Convert.ToDateTime(row[1]);
+                    if (ngay.Date >= tuNgay.Date &&
+                        ngay.Date <= denNgay.Date &&
+                        (string.IsNullOrEmpty(maNhanVien) || row[2].ToString() == maNhanVien))
+                    {
+                        ketQua.ImportRow(row);
+                    }
+                }
+                return ketQua;
             }
             catch (Exception ex)
             {
@@ -37,19 +75,6 @@ namespace LTTQ_BTL.BLL
             DataTable dt = dao.LayPhieuDatBan(ma.Trim());
             return dt.DefaultView.ToTable(
                     false, "MaPhieu", "MaKhach", "MaNhanVien", "NgayDat", "NgayDung", "TongTien");
-            /*try
-            {
-                DataTable dt = dao.LayPhieuDatBan(ma.Trim());
-                if (dt.Rows.Count == 0)
-                    throw new Exception("Không tìm thấy phiếu đặt bàn này.");
-
-                return dt.DefaultView.ToTable(
-                    false, "MaPhieu", "MaKhach", "MaNhanVien", "NgayDat", "NgayDung", "TongTien");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi lấy thông tin phiếu đặt bàn: " + ex.Message);
-            }*/
         }
 
         //danh sach mon trong phieu
@@ -61,8 +86,6 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.DSChiTietPhieuDatBan(ma.Trim());
-                if (dt.Rows.Count == 0)
-                    return new DataTable();
 
                 return dt.DefaultView.ToTable(false, "MaMonAN", "TenMonAn", "MaLoai", "SoLuong", "DonGia", "GiamGia", "ThanhTien");
             }
@@ -82,7 +105,6 @@ namespace LTTQ_BTL.BLL
                             decimal tongTien,
                             DataTable dtChiTiet)
         {
-            // Kiểm tra dữ liệu bắt buộc
             if (string.IsNullOrWhiteSpace(maPhieu))
                 throw new Exception("Mã phiếu không được để trống.");
 
@@ -91,6 +113,8 @@ namespace LTTQ_BTL.BLL
 
             if (string.IsNullOrWhiteSpace(maNhanVien))
                 throw new Exception("Nhân viên không được để trống.");
+            if (ngayDat >= ngayDung)
+                throw new Exception("Ngày đặt phải nhỏ hơn ngày dùng.");
 
             if (tongTien <= 0)
                 throw new Exception("Tổng tiền phải lớn hơn 0.");
@@ -116,30 +140,6 @@ namespace LTTQ_BTL.BLL
             }
         }
 
-        public DataTable DSKhach()
-        {
-            try
-            {
-                return dao.DSKhach();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi lấy danh sách khách hàng: " + ex.Message);
-            }
-        }
-
-        public DataTable DSNhanVien()
-        {
-            try
-            {
-                return dao.DSNhanVien();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi lấy danh sách nhân viên: " + ex.Message);
-            }
-        }
-
         //update phieu
         public bool SuaPhieuDatBan(
                         string maPhieu,
@@ -162,9 +162,6 @@ namespace LTTQ_BTL.BLL
 
             if (ngayDat >= ngayDung)
                 throw new Exception("Ngày đặt phải nhỏ hơn ngày dùng.");
-
-            if (ngayDat < DateTime.Now.Date)
-                throw new Exception("Ngày đặt không được nhỏ hơn hôm nay.");
 
             if (tongTien <= 0)
                 throw new Exception("Tổng tiền phải lớn hơn 0.");

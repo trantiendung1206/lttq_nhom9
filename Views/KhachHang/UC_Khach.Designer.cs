@@ -42,6 +42,7 @@
             label1 = new Label();
             groupBox2 = new GroupBox();
             dgvKhach = new DataGridView();
+            button1 = new Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvKhach).BeginInit();
@@ -49,6 +50,8 @@
             // 
             // groupBox1
             // 
+            groupBox1.BackColor = Color.FromArgb(254, 254, 254);
+            groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(btnLamMoi);
             groupBox1.Controls.Add(btnXoa);
             groupBox1.Controls.Add(btnThem);
@@ -61,11 +64,11 @@
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(label1);
             groupBox1.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            groupBox1.Location = new Point(54, 44);
+            groupBox1.Location = new Point(32, 44);
             groupBox1.Margin = new Padding(3, 4, 3, 4);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new Padding(3, 4, 3, 4);
-            groupBox1.Size = new Size(442, 514);
+            groupBox1.Size = new Size(481, 484);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
             groupBox1.Text = "Thông tin chi tiết";
@@ -73,7 +76,7 @@
             // btnLamMoi
             // 
             btnLamMoi.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            btnLamMoi.Location = new Point(324, 384);
+            btnLamMoi.Location = new Point(363, 384);
             btnLamMoi.Margin = new Padding(3, 4, 3, 4);
             btnLamMoi.Name = "btnLamMoi";
             btnLamMoi.Size = new Size(112, 41);
@@ -85,7 +88,7 @@
             // btnXoa
             // 
             btnXoa.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
-            btnXoa.Location = new Point(167, 384);
+            btnXoa.Location = new Point(245, 384);
             btnXoa.Margin = new Padding(3, 4, 3, 4);
             btnXoa.Name = "btnXoa";
             btnXoa.Size = new Size(112, 41);
@@ -184,19 +187,22 @@
             // 
             // groupBox2
             // 
+            groupBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox2.BackColor = Color.FromArgb(254, 254, 254);
             groupBox2.Controls.Add(dgvKhach);
             groupBox2.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
             groupBox2.Location = new Point(535, 44);
             groupBox2.Margin = new Padding(3, 4, 3, 4);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new Padding(3, 4, 3, 4);
-            groupBox2.Size = new Size(600, 514);
+            groupBox2.Size = new Size(341, 634);
             groupBox2.TabIndex = 3;
             groupBox2.TabStop = false;
             groupBox2.Text = "Danh sách khách hàng";
             // 
             // dgvKhach
             // 
+            dgvKhach.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvKhach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvKhach.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvKhach.Location = new Point(23, 45);
@@ -204,8 +210,20 @@
             dgvKhach.Name = "dgvKhach";
             dgvKhach.RowHeadersWidth = 51;
             dgvKhach.RowTemplate.Height = 24;
-            dgvKhach.Size = new Size(557, 439);
+            dgvKhach.Size = new Size(295, 439);
             dgvKhach.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 163);
+            button1.Location = new Point(124, 384);
+            button1.Margin = new Padding(3, 4, 3, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(112, 41);
+            button1.TabIndex = 11;
+            button1.Text = "&Sửa";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // UC_Khach
             // 
@@ -215,7 +233,8 @@
             Controls.Add(groupBox2);
             Margin = new Padding(3, 4, 3, 4);
             Name = "UC_Khach";
-            Size = new Size(1194, 654);
+            Size = new Size(900, 700);
+            Load += UC_Khach_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
@@ -240,5 +259,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgvKhach;
+        private Button button1;
     }
 }

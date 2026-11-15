@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using LTTQ_BTL.BLL;
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 
 namespace LTTQ_BTL.Views.NguyenLieu
 {
@@ -71,8 +71,8 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 UC_NhapNguyenLieu uc = new UC_NhapNguyenLieu(ma);
 
                 form.HienThiTrang(uc);
-            }
         }
+        
 
         private void label1_Click(object sender, EventArgs e)
         {
@@ -145,8 +145,8 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 UC_SuaNguyenLieu uc = new UC_SuaNguyenLieu(ma);
 
                 form.HienThiTrang(uc);
-            }
         }
+        
 
         private void button2_Click(object sender, EventArgs e)
         {

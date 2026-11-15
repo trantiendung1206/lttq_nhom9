@@ -1,5 +1,5 @@
 ﻿using LTTQ_BTL.BLL;
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +15,7 @@ namespace LTTQ_BTL.Views.NguyenLieu
         string maNL;
         NguyenLieuBLL bll1 = new NguyenLieuBLL();
         HoaDonNhapDao bll2 = new HoaDonNhapDao(); 
+        NhanVienBLL bll3 = new NhanVienBLL();
         public UC_NhapNguyenLieu(string ma)
         {
             InitializeComponent();
@@ -41,12 +42,12 @@ namespace LTTQ_BTL.Views.NguyenLieu
                 textBox1.Text = dt1.Rows[0][5]?.ToString() ?? "";
             textBox1.Enabled = false;
 
-                DataTable dt2 = bll1.DSNhanVien();
+                DataTable dt2 = bll3.DSNhanVien();
             comboBox3.DataSource = dt2;
             comboBox3.DisplayMember = "TenNhanVien";
             comboBox3.ValueMember = "MaNhanVien";
 
-                DataTable dt3 = bll1.DSNhaCungCap();
+                DataTable dt3 = bll3.DSNhaCungCap();
             comboBox4.DataSource = dt3;
             comboBox4.DisplayMember = "TenNhaCungCap";
             comboBox4.ValueMember = "MaNhaCungCap";

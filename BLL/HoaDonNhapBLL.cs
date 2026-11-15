@@ -1,4 +1,4 @@
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,10 +15,52 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.DSHoaDonNhap();
-                if (dt.Rows.Count == 0)
-                    return new DataTable(); // Trả về bảng rỗng thay vì lỗi
 
                 return dt.DefaultView.ToTable(false, "MaHoaDonNhap", "NgayNhap", "TenNhanVien", "TenNhaCungCap", "TongTien");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách hóa đơn nhập: " + ex.Message);
+            }
+        }
+        //dùng trong báo cáo
+        public DataTable DSHoaDonNhap_BaoCao()
+        {
+            try
+            {
+                DataTable dt = dao.DSHoaDonNhap();
+
+                return dt.DefaultView.ToTable(false, "MaHoaDonNhap", "NgayNhap", "MaNhanVien", "TenNhanVien", "TenNhaCungCap", "TongTien");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi lấy danh sách hóa đơn nhập: " + ex.Message);
+            }
+        }
+
+        //dùng trong báo cáo
+        public DataTable LocDSHoaDonNhap_BaoCao(DateTime tuNgay, DateTime denNgay, string maNhanVien)
+        {
+            try
+            {
+                DataTable dt = dao.DSHoaDonNhap();
+
+                dt = dt.DefaultView.ToTable(false, "MaHoaDonNhap", "NgayNhap", "MaNhanVien", "TenNhanVien", "TenNhaCungCap", "TongTien");
+
+                DataTable ketQua = dt.Clone();
+                ketQua.Clear();
+                foreach (DataRow row in dt.Rows)
+                {
+                    DateTime ngay = Convert.ToDateTime(row[1]);
+
+                    if (ngay.Date >= tuNgay.Date &&
+                        ngay.Date <= denNgay.Date && (string.IsNullOrEmpty(maNhanVien) || row[2].ToString() == maNhanVien))
+                    {
+                        ketQua.ImportRow(row);
+                    }
+                }
+
+                return ketQua;
             }
             catch (Exception ex)
             {
@@ -34,8 +76,6 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.ChiTietHoaDonNhap(ma.Trim());
-                if (dt.Rows.Count == 0)
-                    return new DataTable();
 
                 return dt.DefaultView.ToTable(false, "MaHoaDonNhap", "MaNguyenLieu", "TenNguyenLieu", "SoLuong", "DonGia", "KhuyenMai", "ThanhTien");
             }
@@ -56,7 +96,6 @@ namespace LTTQ_BTL.BLL
             decimal donGia,
             decimal khuyenMai)
         {
-            // Kiểm tra dữ liệu bắt buộc
             if (string.IsNullOrWhiteSpace(maHoaDon))
                 throw new Exception("Mã hóa đơn không được để trống.");
 

@@ -1,7 +1,6 @@
 ﻿using LTTQ_BTL.BLL;
 using LTTQ_BTL.Dal;
 using Microsoft.Data.SqlClient;
-using QuanLyNhaHang.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,38 +13,40 @@ namespace LTTQ_BTL.Views.Khach
 {
     public partial class UC_Khach : UserControl
     {
-        Database db = new Database();
+        KhachHangBLL bll = new KhachHangBLL();
 
         public UC_Khach()
         {
             InitializeComponent();
-
-            LoadDanhSachKhach();
         }
 
+        private void DinhDangDGV()
+        {
+            dgvKhach.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvKhach.RowHeadersVisible = false;
+
+            dgvKhach.Columns["MaKhach"].HeaderText = "Mã Khách";
+            dgvKhach.Columns["TenKhach"].HeaderText = "Tên Khách Hàng";
+            dgvKhach.Columns["DiaChi"].HeaderText = "Địa chỉ";
+            dgvKhach.Columns["DienThoai"].HeaderText = "Điện thoại";
+
+            dgvKhach.Columns["MaKhach"].FillWeight = 10;
+            dgvKhach.Columns["TenKhach"].FillWeight = 40;
+            dgvKhach.Columns["DiaChi"].FillWeight = 20;
+            dgvKhach.Columns["DienThoai"].FillWeight = 20;
+
+            dgvKhach.ReadOnly = true;
+            dgvKhach.AllowUserToResizeColumns = false;
+            dgvKhach.AllowUserToResizeRows = false;
+            dgvKhach.AllowUserToAddRows = false;
+            dgvKhach.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        }
+
+        bool dangSua = false;
         private void LoadDanhSachKhach()
         {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = db.GetConnection())
-            {
-                conn.Open();
-                string query = "SELECT * FROM Khach";
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                da.Fill(dt);
-            }
+            DataTable dt = bll.DSKhachHang();
             dgvKhach.DataSource = dt;
-
-            if (dgvKhach.Columns.Count > 0)
-            {
-                try
-                {
-                    dgvKhach.Columns["MaKhach"].HeaderText = "Mã Khách";
-                    dgvKhach.Columns["TenKhach"].HeaderText = "Tên Khách Hàng";
-                    dgvKhach.Columns["DiaChi"].HeaderText = "Địa chỉ";
-                    dgvKhach.Columns["DienThoai"].HeaderText = "Điện thoại";
-                }
-                catch { }
-            }
         }
 
         private void btnThem_Click(object sender, EventArgs e)
@@ -57,38 +58,21 @@ namespace LTTQ_BTL.Views.Khach
                 string diaChi = txtDiaChi.Text.Trim();
                 string dienThoai = txtDienThoai.Text.Trim();
 
-                if (string.IsNullOrEmpty(maKhach) || string.IsNullOrEmpty(tenKhach))
-                {
-                    MessageBox.Show("Vui lòng nhập đầy đủ Mã khách và Tên khách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                bll.ThemKhach(
+                    maKhach,
+                    tenKhach,
+                    diaChi,
+                    dienThoai
+                );
 
-                using (SqlConnection conn = db.GetConnection())
-                {
-                    conn.Open();
-                    string query = "INSERT INTO Khach (MaKhach, TenKhach, DiaChi, DienThoai) VALUES (@MaKhach, @TenKhach, @DiaChi, @DienThoai)";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@MaKhach", maKhach);
-                    cmd.Parameters.AddWithValue("@TenKhach", tenKhach);
-                    cmd.Parameters.AddWithValue("@DiaChi", diaChi);
-                    cmd.Parameters.AddWithValue("@DienThoai", dienThoai);
+                MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    int rowCount = cmd.ExecuteNonQuery();
-                    if (rowCount > 0)
-                    {
-                        MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadDanhSachKhach();
-                        btnLamMoi_Click(sender, e);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Thêm thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                LoadDanhSachKhach();
+                btnLamMoi_Click(sender, e);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -105,7 +89,7 @@ namespace LTTQ_BTL.Views.Khach
         {
             if (e.RowIndex >= 0)
             {
-                DataGridViewRow row = dgvKhach.Rows[e.RowIndex];
+                DataGridViewRow row = dgvKhach.SelectedRows[0];
                 txtMaKhach.Text = row.Cells["MaKhach"].Value.ToString();
                 txtTenKhach.Text = row.Cells["TenKhach"].Value.ToString();
                 txtDiaChi.Text = row.Cells["DiaChi"].Value.ToString() == "" ? "" : row.Cells["DiaChi"].Value.ToString();
@@ -126,32 +110,85 @@ namespace LTTQ_BTL.Views.Khach
                 maKhach = dgvKhach.CurrentRow.Cells["MaKhach"].Value?.ToString() ?? "";
             }
 
-            if (string.IsNullOrEmpty(maKhach))
+            if (string.IsNullOrWhiteSpace(maKhach))
             {
                 maKhach = txtMaKhach.Text.Trim();
             }
 
-            if (string.IsNullOrEmpty(maKhach))
+            if (string.IsNullOrWhiteSpace(maKhach))
             {
                 MessageBox.Show("Vui lòng chọn khách hàng cần xóa trên bảng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            DialogResult dr = MessageBox.Show($"Bạn có chắc chắn muốn xóa khách hàng có mã '{maKhach}' không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dr = MessageBox.Show($"Bạn có chắc chắn muốn xóa khách hàng có mã '{maKhach}' không?",
+                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (dr == DialogResult.Yes)
+            if (dr != DialogResult.Yes)
+                return;
+
+            try
             {
-                bool kq = KhachHangDAL.XoaKhachHang(maKhach);
-                if (kq)
+                bll.XoaKhachHang(maKhach);
+
+                MessageBox.Show("Xóa khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                LoadDanhSachKhach();
+                btnLamMoi_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void UC_Khach_Load(object sender, EventArgs e)
+        {
+            LoadDanhSachKhach();
+            DinhDangDGV();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (!dangSua)
+            {
+                dangSua = true;
+                button1.Text = "Lưu";
+                btnLamMoi.Enabled = false;
+                btnThem.Enabled = false;
+                btnXoa.Enabled = false;
+                dgvKhach.Enabled = false;
+
+                txtMaKhach.Text = dgvKhach.CurrentRow.Cells[0].Value.ToString();
+                txtMaKhach.Enabled = false;
+                txtTenKhach.Text = dgvKhach.CurrentRow.Cells[1].Value.ToString();
+                txtDiaChi.Text = dgvKhach.CurrentRow.Cells[2].Value.ToString();
+                txtDienThoai.Text = dgvKhach.CurrentRow.Cells[3].Value.ToString();
+            }
+            else
+            {
+                try
                 {
-                    MessageBox.Show("Xóa khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string maKhach = txtMaKhach.Text.Trim();
+                    string tenKhach = txtTenKhach.Text.Trim();
+                    string diaChi = txtDiaChi.Text.Trim();
+                    string dienThoai = txtDienThoai.Text.Trim();
+                    bll.SuaKhach(maKhach, tenKhach, diaChi, dienThoai);
+                    MessageBox.Show("Cập nhật thông tin khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDanhSachKhach();
                     btnLamMoi_Click(sender, e);
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Xóa thất bại! Không tìm thấy mã khách này trong CSDL.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(ex.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+                dangSua = false;
+                button1.Text = "Sửa";
+                btnLamMoi.Enabled = true;
+                btnThem.Enabled = true;
+                btnXoa.Enabled = true;
+                dgvKhach.Enabled = true;
+                txtMaKhach.Enabled = true;
             }
         }
     }

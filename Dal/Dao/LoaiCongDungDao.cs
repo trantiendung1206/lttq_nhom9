@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace LTTQ_BTL.Dao
+namespace LTTQ_BTL.Dal.Dao
 {
     public class LoaiCongDungDao
     {
@@ -16,11 +16,9 @@ namespace LTTQ_BTL.Dao
             using (SqlConnection conn = db.GetConnection())
             {
                 SqlCommand cmd = new SqlCommand("sp_DSLoai", conn);
-
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-
                 adapter.Fill(dt);
             }
             return dt;
@@ -32,11 +30,9 @@ namespace LTTQ_BTL.Dao
             using (SqlConnection conn = db.GetConnection())
             {
                 SqlCommand cmd = new SqlCommand("sp_DSCongDung", conn);
-
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-
                 adapter.Fill(dt);
             }
             return dt;

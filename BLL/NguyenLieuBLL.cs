@@ -1,4 +1,4 @@
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -42,41 +42,6 @@ namespace LTTQ_BTL.BLL
                 throw new Exception("Mã nguyên liệu không được để trống.");
 
             return dao.LayTheoMa(ma.Trim());
-            /*try
-            {
-                DataTable dt = dao.LayTheoMa(ma.Trim());
-                if (dt.Rows.Count == 0)
-                    throw new Exception("Không tìm thấy nguyên liệu này.");
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi lấy thông tin nguyên liệu: " + ex.Message);
-            }*/
-        }
-
-        public DataTable DSNhanVien()
-        {
-            try
-            {
-                return dao.DSNhanVien();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi lấy danh sách nhân viên: " + ex.Message);
-            }
-        }
-
-        public DataTable DSNhaCungCap()
-        {
-            try
-            {
-                return dao.DSNhaCungCap();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi lấy danh sách nhà cung cấp: " + ex.Message);
-            }
         }
 
         public bool ThemNguyenLieu(
@@ -180,7 +145,7 @@ namespace LTTQ_BTL.BLL
             }
         }
 
-        //lay danh sach nguyen lieu dung trong trang them/sua mon an
+        //Lấy danh sách nguyên liệu dùng trong trang sửa món ăn
         public DataTable DSNguyenLieuThemMonAn(string ten)
         {
             try
@@ -202,7 +167,7 @@ namespace LTTQ_BTL.BLL
             }
         }
 
-        //lay nguyen lieu de cho vao bang nguyen lieu che bien mon an
+        //lấy nguyên liệu cho vào bảng nguyên liệu chế biến món ăn
         public DataTable LayNguyenLieuThemMonAn(string ma)
         {
             if (string.IsNullOrWhiteSpace(ma))

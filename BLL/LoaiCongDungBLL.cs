@@ -1,4 +1,4 @@
-using LTTQ_BTL.Dao;
+using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,8 +15,7 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.DSCongDung();
-                if (dt == null || dt.Rows.Count == 0)
-                    return new DataTable();
+
                 return dt;
             }
             catch (Exception ex)
@@ -30,8 +29,7 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.DSLoai();
-                if (dt == null || dt.Rows.Count == 0)
-                    return new DataTable();
+
                 return dt;
             }
             catch (Exception ex)

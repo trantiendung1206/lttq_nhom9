@@ -43,6 +43,8 @@
             label1 = new Label();
             groupBox5 = new GroupBox();
             groupBox4 = new GroupBox();
+            cboNhanVien = new ComboBox();
+            cboLoaiBaoCao = new ComboBox();
             btnXuatEccel = new Button();
             chartTyLeGioiTinh = new System.Windows.Forms.DataVisualization.Charting.Chart();
             chartDoanhThu6Thang = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -58,8 +60,6 @@
             panel1 = new Panel();
             groupBox3 = new GroupBox();
             groupBox1 = new GroupBox();
-            cboLoaiBaoCao = new ComboBox();
-            cboNhanVien = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgvBaoCao).BeginInit();
             groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
@@ -105,7 +105,7 @@
             btnTaoBaoCao.Name = "btnTaoBaoCao";
             btnTaoBaoCao.Size = new Size(146, 51);
             btnTaoBaoCao.TabIndex = 8;
-            btnTaoBaoCao.Text = "[ Tạo báo cáo ]";
+            btnTaoBaoCao.Text = "[ Lọc báo cáo ]";
             btnTaoBaoCao.UseVisualStyleBackColor = false;
             btnTaoBaoCao.Click += btnTaoBaoCao_Click;
             // 
@@ -197,6 +197,24 @@
             groupBox4.TabStop = false;
             groupBox4.Text = "BỘ LỌC BÁO CÁO";
             // 
+            // cboNhanVien
+            // 
+            cboNhanVien.FormattingEnabled = true;
+            cboNhanVien.Location = new Point(148, 202);
+            cboNhanVien.Name = "cboNhanVien";
+            cboNhanVien.Size = new Size(270, 28);
+            cboNhanVien.TabIndex = 12;
+            // 
+            // cboLoaiBaoCao
+            // 
+            cboLoaiBaoCao.FormattingEnabled = true;
+            cboLoaiBaoCao.Items.AddRange(new object[] { "Phiếu đặt bàn", "Hóa đơn nhập" });
+            cboLoaiBaoCao.Location = new Point(156, 32);
+            cboLoaiBaoCao.Name = "cboLoaiBaoCao";
+            cboLoaiBaoCao.Size = new Size(262, 28);
+            cboLoaiBaoCao.TabIndex = 11;
+            cboLoaiBaoCao.SelectedIndexChanged += cboLoaiBaoCao_SelectedIndexChanged;
+            // 
             // btnXuatEccel
             // 
             btnXuatEccel.BackColor = Color.FromArgb(0, 192, 0);
@@ -233,6 +251,7 @@
             chartDoanhThu6Thang.Size = new Size(699, 241);
             chartDoanhThu6Thang.TabIndex = 0;
             chartDoanhThu6Thang.Text = "chart1";
+            chartDoanhThu6Thang.Click += chartDoanhThu6Thang_Click;
             // 
             // groupBox2
             // 
@@ -357,7 +376,7 @@
             groupBox3.Size = new Size(605, 298);
             groupBox3.TabIndex = 7;
             groupBox3.TabStop = false;
-            groupBox3.Text = "Tỷ lệ giới tính khách hàng";
+            groupBox3.Text = "Tỷ lệ giới tính nhân viên";
             // 
             // groupBox1
             // 
@@ -374,22 +393,6 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Dashboard";
             // 
-            // cboLoaiBaoCao
-            // 
-            cboLoaiBaoCao.FormattingEnabled = true;
-            cboLoaiBaoCao.Location = new Point(156, 32);
-            cboLoaiBaoCao.Name = "cboLoaiBaoCao";
-            cboLoaiBaoCao.Size = new Size(262, 28);
-            cboLoaiBaoCao.TabIndex = 11;
-            // 
-            // cboNhanVien
-            // 
-            cboNhanVien.FormattingEnabled = true;
-            cboNhanVien.Location = new Point(156, 197);
-            cboNhanVien.Name = "cboNhanVien";
-            cboNhanVien.Size = new Size(262, 28);
-            cboNhanVien.TabIndex = 12;
-            // 
             // UC_BaoCao
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -402,6 +405,7 @@
             Margin = new Padding(3, 4, 3, 4);
             Name = "UC_BaoCao";
             Size = new Size(1489, 1001);
+            Load += UC_BaoCao_Load;
             ((System.ComponentModel.ISupportInitialize)dgvBaoCao).EndInit();
             groupBox5.ResumeLayout(false);
             groupBox4.ResumeLayout(false);

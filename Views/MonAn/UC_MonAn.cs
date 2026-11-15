@@ -1,5 +1,4 @@
-﻿using LTTQ_BTL.Dao;
-using LTTQ_BTL.Properties;
+﻿using LTTQ_BTL.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,12 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using LTTQ_BTL.BLL;
+using LTTQ_BTL.Dal.Dao;
 
 namespace LTTQ_BTL.Views.MonAn
 {
     public partial class UC_MonAn : UserControl
     {
         MonAnBLL bll1 = new MonAnBLL();
+        LoaiCongDungBLL bll2 = new LoaiCongDungBLL();
         public UC_MonAn()
         {
             InitializeComponent();
@@ -50,17 +51,15 @@ namespace LTTQ_BTL.Views.MonAn
         {
             try
             {
-            MonAnDao dao = new MonAnDao();
-
-                dataGridView1.DataSource = bll1.DSMonAn();
+            dataGridView1.DataSource = bll1.DSMonAn();
             DinhDangDGV();
 
-            DataTable dt1 = dao.DSLoai();
+            DataTable dt1 = bll2.DSLoai();
             comboBox1.DataSource = dt1;
             comboBox1.DisplayMember = "TenLoai";
             comboBox1.ValueMember = "MaLoai";
 
-            DataTable dt2 = dao.DSCongDung();
+            DataTable dt2 = bll2.DSCongDung();
             comboBox2.DataSource = dt2;
             comboBox2.DisplayMember = "TenCongDung";
             comboBox2.ValueMember = "MaCongDung";
@@ -72,7 +71,7 @@ namespace LTTQ_BTL.Views.MonAn
             textBox2.ReadOnly = true;
             textBox2.WordWrap = true;
 
-            DataTable dt3 = dao.LayTheoMa(dataGridView1.CurrentRow.Cells[0].Value.ToString());
+            DataTable dt3 = bll1.LayTheoMa(dataGridView1.CurrentRow.Cells[0].Value.ToString());
             label2.Text = dt3.Rows[0][1].ToString();
             label9.Text = dt3.Rows[0][0].ToString();
             label10.Text = dt3.Rows[0][2].ToString();
@@ -141,8 +140,8 @@ namespace LTTQ_BTL.Views.MonAn
                     return;
 
                 DataTable dt3 = bll1.LayTheoMa(maMon);
-                if (dt3.Rows.Count == 0)
-                    return;
+                /*if (dt3.Rows.Count == 0)
+                    return;*/
 
                 DataRow row = dt3.Rows[0];
                 label2.Text = row[1]?.ToString() ?? "";
@@ -190,14 +189,13 @@ namespace LTTQ_BTL.Views.MonAn
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentRow == null)
+            /*if (dataGridView1.CurrentRow == null)
             {
                 MessageBox.Show("Vui lòng chọn món ăn cần xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
-            }
+            }*/
 
-            string maMon = dataGridView1.CurrentRow
-                .Cells["MaMonAn"].Value?.ToString();
+            string maMon = dataGridView1.CurrentRow.Cells["MaMonAn"].Value?.ToString();
 
             DialogResult xacNhan = MessageBox.Show(
                 "Bạn có chắc chắn muốn xóa món ăn này?",

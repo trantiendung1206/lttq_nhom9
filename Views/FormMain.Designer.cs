@@ -61,7 +61,7 @@
             panel2.Location = new Point(-5, 0);
             panel2.Margin = new Padding(0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(242, 662);
+            panel2.Size = new Size(242, 809);
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
             // 
@@ -237,9 +237,9 @@
             // panel4
             // 
             panel4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel4.Location = new Point(235, 55);
+            panel4.Location = new Point(238, 55);
             panel4.Name = "panel4";
-            panel4.Size = new Size(947, 598);
+            panel4.Size = new Size(944, 745);
             panel4.TabIndex = 4;
             panel4.Paint += panel4_Paint;
             // 
@@ -247,7 +247,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1182, 653);
+            ClientSize = new Size(1182, 800);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel2);

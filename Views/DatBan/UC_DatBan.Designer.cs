@@ -219,10 +219,11 @@
             panel4.Controls.Add(button1);
             panel4.Controls.Add(button2);
             panel4.Controls.Add(button3);
-            panel4.Location = new Point(115, 377);
+            panel4.Location = new Point(57, 377);
             panel4.Name = "panel4";
-            panel4.Size = new Size(344, 51);
+            panel4.Size = new Size(478, 51);
             panel4.TabIndex = 20;
+            panel4.Paint += panel4_Paint;
             // 
             // button1
             // 
@@ -231,7 +232,7 @@
             button1.FlatAppearance.BorderSize = 0;
             button1.FlatStyle = FlatStyle.Flat;
             button1.ForeColor = Color.FromArgb(254, 254, 254);
-            button1.Location = new Point(5, 3);
+            button1.Location = new Point(58, 3);
             button1.Name = "button1";
             button1.Size = new Size(94, 37);
             button1.TabIndex = 9;
@@ -246,7 +247,7 @@
             button2.FlatAppearance.BorderSize = 0;
             button2.FlatStyle = FlatStyle.Flat;
             button2.ForeColor = Color.FromArgb(254, 254, 254);
-            button2.Location = new Point(124, 3);
+            button2.Location = new Point(177, 3);
             button2.Name = "button2";
             button2.Size = new Size(94, 37);
             button2.TabIndex = 10;
@@ -261,7 +262,7 @@
             button3.FlatAppearance.BorderSize = 0;
             button3.FlatStyle = FlatStyle.Flat;
             button3.ForeColor = Color.FromArgb(254, 254, 254);
-            button3.Location = new Point(238, 3);
+            button3.Location = new Point(291, 3);
             button3.Name = "button3";
             button3.Size = new Size(94, 37);
             button3.TabIndex = 11;

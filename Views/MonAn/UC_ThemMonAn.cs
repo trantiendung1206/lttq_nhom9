@@ -231,13 +231,14 @@ namespace LTTQ_BTL.Views.MonAn
                         MessageBox.Show("Nguyên liệu này đã được thêm rồi.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
-                }
+            }
 
                 int sl = 1;
                 if (int.TryParse(textBox7.Text, out int soluong) && soluong > 0)
                 {
                     sl = soluong;
                 }
+                else sl = 1;
 
                 decimal soLuongC = bll2.LaySoLuong(maNguyenLieu);
                 if (sl > soLuongC)
@@ -252,9 +253,9 @@ namespace LTTQ_BTL.Views.MonAn
                     MessageBox.Show("Không tìm thấy thông tin nguyên liệu.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
             }
-            int sl;
+            /*int sl;
             if (int.TryParse(textBox7.Text, out int soluong)) sl = soluong;
-            else sl = 1;
+            else sl = 1;*/
 
             if (sl > bll2.LaySoLuong(dataGridView2.CurrentRow.Cells[0].Value.ToString())) return;
             DataRow r = dt.Rows[0];

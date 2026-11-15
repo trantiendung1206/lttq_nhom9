@@ -5,69 +5,26 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace LTTQ_BTL.Dao
+namespace LTTQ_BTL.Dal.Dao
 {
     public class MonAnDao
     {
         Database db = new Database();
-        /*public DataTable DSMonAn()
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = db.GetConnection())
-            {
-                string sql = "SELECT MaMonAn, TenMonAn, TenCongDung, TenLoai, YeuCau, DonGia " +
-                    "FROM MonAn JOIN CongDung ON MonAn.MaCongDung = CongDung.MaCongDung JOIN LoaiMon ON MonAn.MaLoai = LoaiMon.MaLoai;";
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-
-                adapter.Fill(dt);
-            }
-            return dt;
-        }*/
         // danh sach mon an
         public DataTable DSMonAn(string ten, string loai, string congdung)
         {
             DataTable dt = new DataTable();
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = "SELECT MaMonAn, TenMonAn, TenCongDung, TenLoai, YeuCau, DonGia " +
-                    "FROM MonAn JOIN CongDung ON MonAn.MaCongDung = CongDung.MaCongDung JOIN LoaiMon ON MonAn.MaLoai = LoaiMon.MaLoai " +
-                    "WHERE TenMonAn LIKE @Ten AND MonAn.MaLoai LIKE @Loai AND MonAn.MaCongDung LIKE @CongDung;";
+                SqlCommand cmd = new SqlCommand("sp_DSMonAn", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+                cmd.Parameters.AddWithValue("@Ten", ten);
+                cmd.Parameters.AddWithValue("@Loai", loai);
+                cmd.Parameters.AddWithValue("@CongDung", congdung);
 
-                adapter.SelectCommand.Parameters.AddWithValue("@Ten", "%" + ten + "%");
-                adapter.SelectCommand.Parameters.AddWithValue("@Loai", "%" + loai + "%");
-                adapter.SelectCommand.Parameters.AddWithValue("@CongDung", "%" + congdung + "%");
-
-                adapter.Fill(dt);
-            }
-            return dt;
-        }
-
-        public DataTable DSLoai()
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = db.GetConnection())
-            {
-                string sql = "SELECT * FROM LoaiMon;";
-
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-
-                adapter.Fill(dt);
-            }
-            return dt;
-        }
-
-        public DataTable DSCongDung()
-        {
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = db.GetConnection())
-            {
-                string sql = "SELECT * FROM CongDung;";
-
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(dt);
             }
             return dt;
@@ -79,20 +36,18 @@ namespace LTTQ_BTL.Dao
             DataTable dt = new DataTable();
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = "SELECT MaMonAn, TenMonAn, TenCongDung, TenLoai, CachLam, YeuCau, DonGia , HinhAnh, MonAn.MaLoai " +
-                    "FROM MonAn JOIN CongDung ON MonAn.MaCongDung = CongDung.MaCongDung JOIN LoaiMon ON MonAn.MaLoai = LoaiMon.MaLoai " +
-                    "WHERE MaMonAn = @Ma";
+                SqlCommand cmd = new SqlCommand("sp_LayMonAnTheoMa", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+                cmd.Parameters.AddWithValue("@Ma", ma);
 
-                adapter.SelectCommand.Parameters.AddWithValue("@Ma", ma);
-
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(dt);
             }
             return dt;
         }
 
-        //create mon an
+        //create mon an (stored procedure)
         public bool ThemMonAn(
                         string maMon,
                         string tenMon,
@@ -105,14 +60,9 @@ namespace LTTQ_BTL.Dao
         {
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = @"
-            INSERT INTO MonAn
-            (MaMonAn, TenMonAn, MaCongDung, MaLoai, CachLam, YeuCau, DonGia, HinhAnh)
-            VALUES
-            (@MaMon, @TenMon, @MaCongDung, @MaLoai, @CachLam, @YeuCau, @DonGia, @HinhAnh)";
+                SqlCommand cmd = new SqlCommand("sp_ThemMonAn", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                
                 cmd.Parameters.AddWithValue("@MaMon", maMon);
                 cmd.Parameters.AddWithValue("@TenMon", tenMon);
                 cmd.Parameters.AddWithValue("@MaCongDung", maCongDung);
@@ -120,8 +70,8 @@ namespace LTTQ_BTL.Dao
                 cmd.Parameters.AddWithValue("@CachLam", cachLam);
                 cmd.Parameters.AddWithValue("@YeuCau", yeuCau);
                 cmd.Parameters.AddWithValue("@DonGia", donGia);
-                cmd.Parameters.AddWithValue("@HinhAnh",
-                    string.IsNullOrWhiteSpace(hinhAnh) ? DBNull.Value : hinhAnh);
+
+                cmd.Parameters.AddWithValue("@HinhAnh",string.IsNullOrWhiteSpace(hinhAnh) ? (object)DBNull.Value : hinhAnh);
 
                 conn.Open();
 
@@ -136,32 +86,32 @@ namespace LTTQ_BTL.Dao
         {
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = @"INSERT INTO NguyenLieu_MonAn(MaMonAn, MaNguyenLieu, SoLuong)"
-                            + " VALUES (@MaMonAn, @MaNguyenLieu, @SoLuong)";
+                SqlCommand cmd = new SqlCommand("sp_ThemNguyenLieuMonAn", conn);
 
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@MaMonAn", maMon);
                 cmd.Parameters.AddWithValue("@MaNguyenLieu", maNguyenLieu);
                 cmd.Parameters.AddWithValue("@SoLuong", soLuong);
 
                 conn.Open();
+
                 return cmd.ExecuteNonQuery() > 0;
             }
         }
 
+        //lấy nguyên liệu cho vào danh sách trong lúc tạo món ăn
         public DataTable DSNguyenLieu_MonAn(string ma)
         {
             DataTable dt = new DataTable();
             using (SqlConnection conn = db.GetConnection())
             {
-                string sql = "SELECT * FROM NguyenLieu_MonAn JOIN NguyenLieu ON NguyenLieu_MonAn.MaNguyenLieu = NguyenLieu.MaNguyenLieu" +
-                    " WHERE MaMonAn LIKE @Ma";
+                SqlCommand cmd = new SqlCommand("sp_DSNguyenLieu_MonAn", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+                cmd.Parameters.AddWithValue("@Ma", ma);
 
-                adapter.SelectCommand.Parameters.AddWithValue("@Ma", "%" + ma + "%");
-
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(dt);
             }
             return dt;
@@ -250,48 +200,15 @@ namespace LTTQ_BTL.Dao
         {
             using (SqlConnection conn = db.GetConnection())
             {
+                SqlCommand cmd = new SqlCommand("sp_XoaMonAn", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@MaMon", maMon);
+
                 conn.Open();
 
-                using (SqlTransaction tran = conn.BeginTransaction())
-                {
-                    try
-                    {
-                        // 1. Xóa nguyên liệu liên kết với món ăn
-                        string sqlNguyenLieu = @"
-                    DELETE FROM NguyenLieu_MonAn
-                    WHERE MaMonAn = @MaMon";
-
-                        using (SqlCommand cmd = new SqlCommand(sqlNguyenLieu, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@MaMon", maMon);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // 2. Xóa món ăn
-                        string sqlMonAn = @"
-                    DELETE FROM MonAn
-                    WHERE MaMonAn = @MaMon";
-
-                        int ketQua;
-
-                        using (SqlCommand cmd = new SqlCommand(sqlMonAn, conn, tran))
-                        {
-                            cmd.Parameters.AddWithValue("@MaMon", maMon);
-                            ketQua = cmd.ExecuteNonQuery();
-                        }
-
-                        tran.Commit();
-
-                        return ketQua > 0;
-                    }
-                    catch
-                    {
-                        tran.Rollback();
-                        throw;
-                    }
-                }
+                return cmd.ExecuteNonQuery() > 0;
             }
         }
-        //bat dau dung stored procedure
     }
 }

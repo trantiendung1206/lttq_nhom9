@@ -1,4 +1,4 @@
-﻿using LTTQ_BTL.Dao;
+﻿using LTTQ_BTL.Dal.Dao;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +9,7 @@ namespace LTTQ_BTL.BLL
     public class MonAnBLL
     {
         MonAnDao dao = new MonAnDao();
-        //hien thi danh sach mon an
+
         public DataTable DSMonAn()
         {
             try
@@ -21,7 +21,7 @@ namespace LTTQ_BTL.BLL
                 throw new Exception("Lỗi lấy danh sách món ăn: " + ex.Message);
             }
         }
-        //hien thi danh sach sau tim kiem
+
         public DataTable TimKiem(string ten, string loai, string congDung)
         {
             try
@@ -51,7 +51,7 @@ namespace LTTQ_BTL.BLL
                 throw new Exception("Lỗi kiểm tra món ăn: " + ex.Message);
             }
         }
-        //them mon an
+
         public bool ThemMonAn(
                         string maMon,
                         string tenMon,
@@ -103,8 +103,8 @@ namespace LTTQ_BTL.BLL
 
             try
             {
-                if (dao.LayTheoMa(maMon).Rows.Count == 0)
-                    throw new Exception("Món ăn không tồn tại.");
+                /*if (dao.LayTheoMa(maMon).Rows.Count == 0)
+                    throw new Exception("Món ăn không tồn tại.");*/
 
                 bool ketQua = dao.XoaMonAn(maMon);
 
@@ -156,6 +156,7 @@ namespace LTTQ_BTL.BLL
             }
         }
 
+        //dùng trong phiếu đặt bàn (bảng món được gọi)
         public DataTable LayTheoMa_PhieuDatBan(string ma)
         {
             if (string.IsNullOrWhiteSpace(ma))
@@ -175,6 +176,7 @@ namespace LTTQ_BTL.BLL
             }
         }
 
+        //lấy danh sách nguyên liệu dùng trong trang tạo món ăn
         public DataTable LayNguyenLieu_MonAn(string ma)
         {
             if (string.IsNullOrWhiteSpace(ma))
@@ -183,8 +185,6 @@ namespace LTTQ_BTL.BLL
             try
             {
                 DataTable dt = dao.DSNguyenLieu_MonAn(ma.Trim());
-                if (dt.Rows.Count == 0)
-                    return new DataTable(); // Trả về DataTable rỗng thay vì lỗi
 
                 return dt.DefaultView.ToTable(false, "MaNguyenLieu", "TenNguyenLieu", "DonViTinh", "DonGiaBan", "SoLuong");
             }
@@ -234,6 +234,7 @@ namespace LTTQ_BTL.BLL
             }
         }
 
+        //danh sách mớn ăn dùng trong đặt bàn (bảng món có thể gọi)
         public DataTable DSMonAn_DatBan()
         {
             try
@@ -246,6 +247,7 @@ namespace LTTQ_BTL.BLL
             }
         }
 
+        //tìm kiểm món trong trang đặt bàn
         public DataTable TimKiemMonAn_PhieuDatBan(string ten, string loai, string congdung)
         {
             try
